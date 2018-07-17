@@ -1,0 +1,66 @@
+{
+  "name": "btcr-electron",
+  "productName": "btcr-electron",
+  "version": "1.0.0",
+  "description": "My Electron application description",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\""
+  },
+  "keywords": [],
+  "author": "anthonyronning",
+  "license": "MIT",
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "packageManager": "npm"
+      },
+      "electronWinstallerConfig": {
+        "name": "btcr_electron"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "btcrelectron"
+      }
+    }
+  },
+  "dependencies": {
+    "ajv": "^6.5.2",
+    "electron-compile": "^6.4.3",
+    "electron-devtools-installer": "^2.2.4",
+    "electron-squirrel-startup": "^1.0.0",
+    "vue": "^2.5.16",
+    "vuetify": "^1.1.4",
+    "webpack": "^4.16.1"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^1.0.0",
+    "electron-forge": "^5.2.2",
+    "electron-prebuilt-compile": "2.0.4"
+  }
+}

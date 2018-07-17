@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+  </head>
+  <body>
+    <div id="did-input"></div>
+  </body>
+
+  <script>
+  import Vue from 'vue';
+  import Vuetify from 'vuetify';
+
+
+  Vue.use(Vuetify);
+  import DidInput from './didInput';
+ // import 'vuetify/dist/vuetify.min.css'; // Ensure you are using css-loader
+
+
+  const app = new Vue(DidInput).$mount('#did-input');
+
+
+
+  app.text = "Electron Forge with Vue.js!";
+
+  </script>
+</html>

@@ -1,0 +1,3 @@
+[submodule "libraries/btcr-did-tools-js"]
+	path = libraries/btcr-did-tools-js
+	url = https://github.com/WebOfTrustInfo/btcr-did-tools-js.git
