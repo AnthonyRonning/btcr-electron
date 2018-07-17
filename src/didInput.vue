@@ -61,15 +61,12 @@
                                 console.log('error retrieving data from URL');
                                 self.didResult = err.message;
                             })
-                            .catch(function(err) {
-                                console.log(err);
-                            });
                     } catch (err) {
-                        this.didResult = err;
+                        this.didResult = err.message;
                     }
                 }
                 else {
-                    this.message = 'Missing DID'
+                    this.didResult = 'Missing DID'
                 }
             },
             clear() {

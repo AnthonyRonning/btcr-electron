@@ -2,3 +2,5 @@ node_modules
 out
 
 \.idea/workspace\.xml
+
+\.idea/vcs\.xml
