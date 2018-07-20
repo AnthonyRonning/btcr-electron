@@ -145,7 +145,7 @@ export default {
       resolverOption: 'Select Resolver Option',
       items: [
         { }
-      ],
+      ]
     }
   },
   methods: {

@@ -12,7 +12,12 @@ Pull down the btcr-did-js as a submodule
 git submodule update --init --recursive
 ```
 
+Install packages
+```
+npm install
+```
+
 Running
 ```
-electron-forge start
+npm run dev
 ```
