@@ -4,16 +4,15 @@
         <v-flex>
             <v-card>
                 <v-list two-line>
+                    <v-subheader
+                            :key="header"
+                    >
+                        {{ header }}
+                    </v-subheader>
                     <template v-for="(item, index) in items">
-                        <v-subheader
-                                v-if="item.header"
-                                :key="item.header"
-                        >
-                            {{ item.header }}
-                        </v-subheader>
 
                         <v-divider
-                                v-else-if="item.divider"
+                                v-if="item.divider"
                                 :key="index"
                         ></v-divider>
 
@@ -21,10 +20,13 @@
                                 v-else
                                 :key="item.title"
                         >
-                            <v-list-tile-content>
+                            <v-list-tile-content @click="">
                                 <v-list-tile-title v-html="item.title"></v-list-tile-title>
                                 <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
                             </v-list-tile-content>
+                            <v-list-tile-action>
+                                <v-btn color="error" @click="deleteItem(item)">Delete</v-btn>
+                            </v-list-tile-action>
                         </v-list-tile>
                     </template>
                 </v-list>
@@ -81,6 +83,9 @@
 
 <script>
     let createBtcrDid = require('../../../libraries/btcr-did-tools-js/createBtcrDid')
+    const Datastore = require('nedb-core')
+
+    let db = new Datastore({ filename: '../store/data/tx.db', autoload: true })
 
 export default {
   name: 'didcreater',
@@ -97,7 +102,8 @@ export default {
           btcFee: 0.001,
           items: [
             { header: 'Created TXs' }
-          ]
+          ],
+          header: 'Created DIDs'
         }
   },
 
@@ -117,7 +123,14 @@ export default {
                     title: self.txId,
                     subtitle: 'Input: ' + self.inputBTCAddress + ' | output: ' + self.outputBTCAddress
                   }
-                  self.items.push(item)
+                  db.insert(item, function (err, docu) {
+                    if (err) {
+                      console.log(err)
+                    } else {
+                      console.log(docu)
+                      self.items.push(docu)
+                    }
+                  })
                 }
                 console.log(result)
               }, function (err) {
@@ -135,7 +148,43 @@ export default {
           this.wif = ''
           this.continuationLink = ''
           this.btcrDid = ''
+        },
+        loadStore () {
+          // Find all documents in the collection
+          let self = this
+          db.find({}, async function (err, docs) {
+            if (err) {
+              console.log(err)
+            } else {
+              if (Object.keys(docs).length === 0) {
+                console.log('null database')
+              }
+              self.items = docs
+              console.log(self.items)
+            }
+          })
+        },
+        deleteItem (item) {
+          let self = this
+          db.remove({ _id: item._id }, {}, async function (err, numRemoved) {
+            if (err) {
+              console.log(err)
+            } else {
+              if (numRemoved === 1) {
+                console.log('removed item')
+                let index = self.items.indexOf(item)
+                if (index > -1) {
+                  self.items.splice(index, 1)
+                }
+              } else {
+                console.log('could not remove item: ' + item._id)
+              }
+            }
+          })
         }
+  },
+  created: function () {
+        this.loadStore()
   }
 }
 </script>
