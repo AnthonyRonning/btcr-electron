@@ -3,6 +3,7 @@
 <template>
     <div>
         <!-- did list -->
+        Saved DIDs
             <v-flex>
                 <v-card>
                     <v-list two-line>
@@ -123,6 +124,9 @@
 
 <script>
 let ddoResolver = require('../../../libraries/btcr-did-tools-js/ddoResolver')
+const Datastore = require('nedb-core')
+
+let db = new Datastore({ filename: '../store/data/datafile2.db', autoload: true })
 
 export default {
   name: 'did-input',
@@ -140,9 +144,8 @@ export default {
       didPhase3: '',
       resolverOption: 'Select Resolver Option',
       items: [
-        { header: 'Saved DIDs' }
+        { }
       ],
-      content: 'Hello World!'
     }
   },
   methods: {
@@ -202,12 +205,38 @@ export default {
       let item = {
         title: this.txRef
       }
-      this.items.push(item)
+      let self = this
+      db.insert(item, function (err, docu) {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log(docu)
+          self.items.push(docu)
+        }
+      })
     },
     loadDid (loadedTxRef) {
       this.txRef = loadedTxRef
       this.resolverOption = 'txRef'
+    },
+    loadStore () {
+      // Find all documents in the collection
+      let self = this
+      db.find({}, async function (err, docs) {
+        if (err) {
+          console.log(err)
+        } else {
+          if (Object.keys(docs).length === 0) {
+            console.log('null database')
+          }
+          self.items = docs
+          console.log(self.items)
+        }
+      })
     }
+  },
+  created: function () {
+    this.loadStore()
   }
 }
 </script>
