@@ -1,7 +1,11 @@
 ## btcr-electron
 
 ### WIP
+#### Viewing/Saving DIDs
 ![WIP](gitassets/WIP.png?raw=true "WIP") 
+
+#### Creating DIDs
+![WIP1](gitassets/WIP1.png?raw=true "WIP1") 
 
 
 ### Development
