@@ -83,7 +83,7 @@
                 submit
             </v-btn>
             <v-btn @click="clear">Reset</v-btn>
-            <v-btn @click="save" v-if="didPhase3">Save</v-btn>
+            <v-btn @click="save" v-if="implicitDDO">Save</v-btn>
         </v-form>
 
         <!-- did phases -->
@@ -111,12 +111,23 @@
         </v-container>-->
         <v-container fluid grid-list-md>
             <v-textarea
-                    name="didPhase3"
+                    name="implicitDDO"
                     box
-                    label="Final DID"
+                    label="Implicit DDO"
                     auto-grow
-                    v-if="didPhase3"
-                    v-model="didPhase3"
+                    v-if="implicitDDO"
+                    v-model="implicitDDO"
+                    readonly
+            ></v-textarea>
+        </v-container>
+        <v-container fluid grid-list-md>
+            <v-textarea
+                    name="didResult"
+                    box
+                    label="DID Result"
+                    auto-grow
+                    v-if="didResult"
+                    v-model="didResult"
                     readonly
             ></v-textarea>
         </v-container>
@@ -142,7 +153,7 @@ export default {
       valid: true,
       didPhase1: '',
       didPhase2: '',
-      didPhase3: '',
+      implicitDDO: '',
       resolverOption: 'Select Resolver Option',
       items: [
         { }
@@ -159,9 +170,9 @@ export default {
             .then(function (result) {
               console.log(result)
               self.didResult = JSON.stringify(result, null, 4)
-              self.didPhase1 = JSON.stringify(result.ddophase1, null, 4)
-              self.didPhase2 = JSON.stringify(result.ddophase2, null, 4)
-              self.didPhase3 = JSON.stringify(result.ddophase3, null, 4)
+              // self.didPhase1 = JSON.stringify(result.ddophase1, null, 4)
+              // self.didPhase2 = JSON.stringify(result.ddophase2, null, 4)
+              self.implicitDDO = JSON.stringify(result.ddoResult.implicitDdo, null, 4)
             }, function (err) {
               console.log('error retrieving data from URL:' + err)
               self.didResult = err.message
@@ -175,10 +186,11 @@ export default {
           let self = this
           ddoResolver.resolveFromTxid(this.txId, this.network)
             .then(function (result) {
+              console.log(result)
               self.didResult = JSON.stringify(result, null, 4)
-              self.didPhase1 = JSON.stringify(result.ddophase1, null, 4)
-              self.didPhase2 = JSON.stringify(result.ddophase2, null, 4)
-              self.didPhase3 = JSON.stringify(result.ddophase3, null, 4)
+              // self.didPhase1 = JSON.stringify(result.ddophase1, null, 4)
+              // self.didPhase2 = JSON.stringify(result.ddophase2, null, 4)
+              self.implicitDDO = JSON.stringify(result.ddoResult.implicitDdo, null, 4)
             }, function (err) {
               console.log('error retreiving data from URL:' + err)
               self.didResult = err.message
@@ -200,7 +212,7 @@ export default {
       this.didResult = ''
       this.didPhase1 = ''
       this.didPhase2 = ''
-      this.didPhase3 = ''
+      this.implicitDDO = ''
       this.resolverOption = 'Select Resolver Option'
     },
     save () {
