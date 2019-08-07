@@ -19,6 +19,11 @@ export default new Router({
       path: '/createdid',
       name: 'createdid',
       component: require('@/views/CreateDID').default
+    },
+    {
+      path: '/wallet',
+      name: 'wallet',
+      component: require('@/views/Wallet').default
     }
   ]
 })

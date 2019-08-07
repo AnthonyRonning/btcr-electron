@@ -14,6 +14,9 @@
                 <router-link to='/createdid' tag='button' style='cursor:pointer;'>
                     <v-btn flat>Create DID</v-btn>
                 </router-link>
+                <router-link to='/wallet' tag='button' style='cursor:pointer;'>
+                    <v-btn flat>Wallet</v-btn>
+                </router-link>
             </v-toolbar-items>
         </v-toolbar>
     </div>

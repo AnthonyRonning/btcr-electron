@@ -14,7 +14,7 @@
     "build:win32": "cross-env BUILD_TARGET=win32 node .electron-vue/build.js",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
-    "dev": "node .electron-vue/dev-runner.js",
+    "dev": "node $NODE_DEBUG_OPTION .electron-vue/dev-runner.js",
     "e2e": "npm run pack && mocha test/e2e",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src test",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src test",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
-    "bitcoinjs-lib": "^3.1.0",
+    "bitcoinjs-lib": "^4.0",
     "commander": "^2.11.0",
     "jsonld": "^0.4.12",
     "jsonld-signatures": "^1.2.1",

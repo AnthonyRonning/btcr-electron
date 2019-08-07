@@ -35,21 +35,18 @@
 
         <h2>Create DID</h2>
         <v-form ref="form" v-model="valid" lazy-validation>
-            <v-text-field
+            <v-select
                     v-model="inputBTCAddress"
-                    label="Input Bitcoin Address"
+                    :options="publicAddressList"
+                    placeholder="Input Bitcoin Address"
                     required
-            ></v-text-field>
-            <v-text-field
+            ></v-select>
+            <v-select
                     v-model="outputBTCAddress"
-                    label="Output Bitcoin Address"
+                    :options="publicAddressList"
+                    placeholder="Output Bitcoin Address"
                     required
-            ></v-text-field>
-            <v-text-field
-                    v-model="wif"
-                    label="WIF (Secret Key)"
-                    required
-            ></v-text-field>
+            ></v-select>
             <v-text-field
                     v-model="continuationLink"
                     label="Optional Continuation Link"
@@ -85,7 +82,8 @@
     let createBtcrDid = require('../../../libraries/btcr-did-tools-js/createBtcrDid')
     const Datastore = require('nedb-core')
 
-    let db = new Datastore({ filename: '../store/data/tx.db', autoload: true })
+    let txDb = new Datastore({ filename: '../store/data/tx.db', autoload: true })
+    let addressDb = new Datastore({ filename: '../store/data/wallet.db', autoload: true })
 
 export default {
   name: 'didcreater',
@@ -103,7 +101,9 @@ export default {
           items: [
             { header: 'Created TXs' }
           ],
-          header: 'Created DIDs'
+          header: 'Created DIDs',
+          addressList: [],
+          publicAddressList: []
         }
   },
 
@@ -111,6 +111,9 @@ export default {
         handleSubmit () {
           try {
             let self = this
+
+            self.setWifFromSelectedPublicKey()
+
             createBtcrDid.createBtcrDid(this.inputBTCAddress, this.outputBTCAddress, this.network, this.wif, this.continuationLink, this.btcFee)
               .then(function (result) {
                 let jsonResult = JSON.parse(result)
@@ -123,7 +126,7 @@ export default {
                     title: self.txId,
                     subtitle: 'Input: ' + self.inputBTCAddress + ' | output: ' + self.outputBTCAddress
                   }
-                  db.insert(item, function (err, docu) {
+                  txDb.insert(item, function (err, docu) {
                     if (err) {
                       console.log(err)
                     } else {
@@ -142,6 +145,13 @@ export default {
             console.log(err)
           }
         },
+        setWifFromSelectedPublicKey () {
+          let self = this
+          let selectedAddress = this.addressList.find(function (address) {
+            return address.address === self.inputBTCAddress
+          })
+          self.wif = selectedAddress.wif
+        },
         clear () {
           this.inputBTCAddress = ''
           this.outputBTCAddress = ''
@@ -149,10 +159,10 @@ export default {
           this.continuationLink = ''
           this.btcrDid = ''
         },
-        loadStore () {
+        loadTxStore () {
           // Find all documents in the collection
           let self = this
-          db.find({}, async function (err, docs) {
+          txDb.find({}, async function (err, docs) {
             if (err) {
               console.log(err)
             } else {
@@ -164,9 +174,23 @@ export default {
             }
           })
         },
+        loadAddressStore () {
+          let self = this
+          addressDb.find({}, async function (err, wallets) {
+            if (err) {
+              console.log(err)
+            } else {
+              if (Object.keys(wallets).length === 0) {
+                console.log('null database')
+              }
+              self.addressList = wallets
+              console.log(self.addressList)
+            }
+          })
+        },
         deleteItem (item) {
           let self = this
-          db.remove({ _id: item._id }, {}, async function (err, numRemoved) {
+          txDb.remove({ _id: item._id }, {}, async function (err, numRemoved) {
             if (err) {
               console.log(err)
             } else {
@@ -184,7 +208,22 @@ export default {
         }
   },
   created: function () {
-        this.loadStore()
+        this.loadTxStore()
+        this.loadAddressStore()
+  },
+  computed: {
+        publicKeyList: function () {
+          return this.addressList.map(function (item) {
+            return item['address']
+          })
+        }
+  },
+  watch: {
+        addressList: function (val) {
+          this.publicAddressList = this.addressList.map(function (item) {
+            return item['address']
+          })
+        }
   }
 }
 </script>
