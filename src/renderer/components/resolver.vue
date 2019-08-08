@@ -25,6 +25,7 @@
                             >
                                 <v-list-tile-content @click="loadDid(item.title)">
                                     <v-list-tile-title v-html="item.title"></v-list-tile-title>
+                                    <v-list-tile-sub-title v-html="item.label"></v-list-tile-sub-title>
                                 </v-list-tile-content>
                                 <v-list-tile-action>
                                     <v-btn color="error" @click="deleteItem(item)">Delete</v-btn>
@@ -83,6 +84,15 @@
                 submit
             </v-btn>
             <v-btn @click="clear">Reset</v-btn>
+
+            <!-- save form -->
+            <v-form ref="form" v-model="validLabelForm" v-if="implicitDDO" lazy-validation>
+                <v-text-field
+                        v-model="didLabelForm"
+                        label="Add Label"
+                ></v-text-field>
+            </v-form>
+
             <v-btn @click="save" v-if="implicitDDO">Save</v-btn>
         </v-form>
 
@@ -151,10 +161,12 @@ export default {
       didResult: '',
       network: 'testnet',
       valid: true,
+      validLabelForm: true,
       didPhase1: '',
       didPhase2: '',
       implicitDDO: '',
       resolverOption: 'Select Resolver Option',
+      didLabelForm: '',
       items: [
         { }
       ],
@@ -214,10 +226,12 @@ export default {
       this.didPhase2 = ''
       this.implicitDDO = ''
       this.resolverOption = 'Select Resolver Option'
+      this.didLabelForm = ''
     },
     save () {
       let item = {
-        title: this.txRef
+        title: this.txRef,
+        label: this.didLabelForm
       }
       let self = this
       db.insert(item, function (err, docu) {
