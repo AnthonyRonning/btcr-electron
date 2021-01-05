@@ -26,7 +26,7 @@
     "postinstall": "npm run lint:fix"
   },
   "dependencies": {
-    "axios": "^0.16.1",
+    "axios": "^0.21.1",
     "bitcoinjs-lib": "^4.0",
     "commander": "^2.11.0",
     "jsonld": "^0.4.12",
